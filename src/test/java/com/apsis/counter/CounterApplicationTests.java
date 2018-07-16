@@ -12,5 +12,5 @@ public class CounterApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-
+	
 }
