@@ -1,14 +1,14 @@
 package com.apsis.counter.service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class CounterServiceImp implements CounterService {
 
-	private Map<String, Counter> counterList = new HashMap<>();
+	private ConcurrentHashMap<String, Counter> counterList = new ConcurrentHashMap<String, Counter>();
 
 	@Override
 	public synchronized Counter createCounter(Counter counter) {
@@ -18,20 +18,20 @@ public class CounterServiceImp implements CounterService {
 
 	@Override
 	public synchronized Counter getCurrentCounterNumber(String counterName) {
-		return counterList.get(counterName);
+		return (Counter) counterList.get(counterName);
 	}
 
 	@Override
 	public synchronized Counter incrementCounterNumber(String counterName) {
 		if (counterList.containsKey(counterName)) {
 			updateCounter(counterName);
-			return counterList.get(counterName);
+			return (Counter) counterList.get(counterName);
 		}
 		return null;
 	}
 
 	private synchronized void updateCounter(String counterName) {
-		Counter c = counterList.get(counterName);
+		Counter c = (Counter) counterList.get(counterName);
 		c.setCounterNumber(c.getCounterNumber() + 1);
 		counterList.put(c.getCounterName(), c);
 
@@ -42,7 +42,7 @@ public class CounterServiceImp implements CounterService {
 		return counterList;
 	}
 
-	public void setCounterList(Map<String, Counter> counterList) {
+	public void setCounterList(ConcurrentHashMap<String, Counter> counterList) {
 		this.counterList = counterList;
 	}
 
