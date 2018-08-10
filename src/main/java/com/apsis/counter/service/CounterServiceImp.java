@@ -11,18 +11,18 @@ public class CounterServiceImp implements CounterService {
 	private Map<String, Counter> counterList = new HashMap<>();
 
 	@Override
-	public Counter createCounter(Counter counter) {
+	public synchronized Counter createCounter(Counter counter) {
 		increaseList(counter);
 		return counter;
 	}
 
 	@Override
-	public Counter getCurrentCounterNumber(String counterName) {
+	public synchronized Counter getCurrentCounterNumber(String counterName) {
 		return counterList.get(counterName);
 	}
 
 	@Override
-	public Counter incrementCounterNumber(String counterName) {
+	public synchronized Counter incrementCounterNumber(String counterName) {
 		if (counterList.containsKey(counterName)) {
 			updateCounter(counterName);
 			return counterList.get(counterName);
@@ -30,7 +30,7 @@ public class CounterServiceImp implements CounterService {
 		return null;
 	}
 
-	private void updateCounter(String counterName) {
+	private synchronized void updateCounter(String counterName) {
 		Counter c = counterList.get(counterName);
 		c.setCounterNumber(c.getCounterNumber() + 1);
 		counterList.put(c.getCounterName(), c);
